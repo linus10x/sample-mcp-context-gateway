@@ -1,6 +1,6 @@
 # SAMPLE: MCP context gateway with scoped access, human approval and an audit trail
 
-> **Sample / illustrative work by Kunjar Bhaduri (Bhaduri Advisory). Synthetic data only. Not a client deliverable, not production software, and not connected to any real system or company.** Built October 2, 2026, with AI coding assistance under my direction; I reviewed, ran and tested it.
+> **Sample / illustrative work by Kunjar Bhaduri (Bhaduri Advisory). Synthetic data only. Not a client deliverable, not production software, and not connected to any real system or company.** Built October 2, 2026, by AI coding tools under my direction; the runs below were done that day.
 
 ## Which bids it answers
 Written as a work sample for public postings that ask for MCP / AI-agent integration with enterprise controls: an applied AI architect contract for an enterprise agent platform (context layer over MCP, SSO/OAuth, firewalled deployment) and an AI-native sales platform build on top of an existing CRM (guardrails before pricing, contracts and payments). **Illustrative sample on synthetic data. No client relationship.**
@@ -29,7 +29,7 @@ python3 -m unittest discover -s tests -v     # 13 tests
 uv run --with mcp python interop/sdk_client_check.py   # optional: drives it with the official MCP Python SDK client
 ```
 
-## What I ran (Oct 2, 2026, Linux box, Python 3.13.5)
+## Test runs (Oct 2, 2026, Linux, Python 3.13.5)
 - `demo.py`: 19/19 expectations held, exit 0.
 - Unit tests: 13 passed.
 - Interop: the official MCP Python SDK client (`mcp` 2.3.0) initialized the server (protocol `2025-06-18`), listed the 7 tools, and got `NOT_FOUND` for a cross-tenant read.
@@ -44,4 +44,4 @@ uv run --with mcp python interop/sdk_client_check.py   # optional: drives it wit
 - No load, security or penetration testing was done. No certification or compliance claim of any kind.
 
 ## Where it lives
-Private repository github.com/linus10x/sample-mcp-context-gateway until it has been reviewed; it becomes public only after that review.
+github.com/linus10x/sample-mcp-context-gateway, made public after an accuracy review.
