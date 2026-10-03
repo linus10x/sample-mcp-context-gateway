@@ -29,14 +29,3 @@ def discount_decision(discount_pct):
         return "PENDING_APPROVAL", [("discount_within_auto_limit", False), ("discount_within_approval_limit", True)]
     return "DENY", [("discount_within_approval_limit", False)]
 
-
-def deposit_checks(account, approved_quote_total, amount):
-    """Money is irreversible, so every check must pass AND a human must approve."""
-    checks = [
-        ("contract_signed", account["contract"] == "signed"),
-        ("approved_quote_exists", approved_quote_total is not None),
-        ("amount_positive", amount > 0),
-        ("amount_within_deposit_share",
-         approved_quote_total is not None and amount <= round(approved_quote_total * DEPOSIT_MAX_SHARE, 2)),
-    ]
-    return ("PENDING_APPROVAL" if all(ok for _, ok in checks) else "DENY"), checks

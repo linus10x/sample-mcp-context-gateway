@@ -7,8 +7,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 class Session:
     def __init__(self, token, workdir):
         env = dict(os.environ, MCP_BEARER=token,
-                   GATEWAY_STATE=os.path.join(workdir, "state.json"),
-                   GATEWAY_AUDIT=os.path.join(workdir, "audit.jsonl"),
+                   GATEWAY_STATE=os.path.join(workdir, "state.sqlite3"),
                    PYTHONPATH=HERE)
         self.p = subprocess.Popen([sys.executable, "-m", "gateway.server"], cwd=HERE, env=env,
                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -37,3 +36,5 @@ class Session:
     def close(self):
         self.p.stdin.close()
         self.p.wait(timeout=5)
+        self.p.stdout.close()
+        self.p.stderr.close()

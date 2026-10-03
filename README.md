@@ -1,47 +1,54 @@
-# SAMPLE: MCP context gateway with scoped access, human approval and an audit trail
+# SAMPLE: MCP context gateway with approval controls
 
-> **Sample / illustrative work by Kunjar Bhaduri (Bhaduri Advisory). Synthetic data only. Not a client deliverable, not production software, and not connected to any real system or company.** Built October 2, 2026, by AI coding tools under my direction; the runs below were done that day.
+> **Illustrative sample on synthetic data by Kunjar Bhaduri, Bhaduri Advisory. Synthetic accounts and deliberately fake tokens only. Built by AI coding tools under my direction. No client relationship, real system connection or money movement. Revised October 3, 2026 (America/Chicago).**
 
-## Which bids it answers
-Written as a work sample for public postings that ask for MCP / AI-agent integration with enterprise controls: an applied AI architect contract for an enterprise agent platform (context layer over MCP, SSO/OAuth, firewalled deployment) and an AI-native sales platform build on top of an existing CRM (guardrails before pricing, contracts and payments). **Illustrative sample on synthetic data. No client relationship.**
+An agent needs a controlled path from account context to an action. This server demonstrates tenant boundaries, tool scopes, reviewable approvals, execution-time checks and an audit record that commits with local state. It is relevant to applied-AI architect and CRM/AI integration work. The scoring harness is a separate sample.
 
-## The problem it shows
-When an AI agent is connected to business systems through MCP, the hard part is rarely the tool call itself. It's making the connection safe to leave running: the agent should see only its own tenant's data, hold only the scopes it needs, never change records or move money without a person approving, and leave a record someone else can check.
+## Run and inspect
 
-This sample is a small MCP server (JSON-RPC 2.0 over stdio, Python standard library only) in front of a synthetic sales CRM. It exposes seven tools:
+Python 3.10+, standard library only for the main demo and tests. From this repository:
 
-| Tool | Scope needed | What the policy does |
-|---|---|---|
-| `search_accounts`, `get_account`, `list_pending` | `crm.read` | Reads only the caller's tenant. Another tenant's record looks exactly like a missing one (no existence leak). |
-| `set_lead_tier` | `crm.write` | Never writes directly. Returns `PENDING_APPROVAL` with an action id. |
-| `quote_price` | `quotes.write` | Discount up to 10%: allowed. Over 10% to 20%: needs human approval. Over 20%: denied. |
-| `request_deposit` | `payments.request` | Denied unless the contract is signed, an approved quote exists and the amount is at most 50% of it. Even then it only becomes `PENDING_APPROVAL`. |
-| `approve_action` | `actions.approve` | A human approves. The approver must be a different principal from the requester, and in the same tenant. |
-
-Every `tools/call` is appended to a hash-chained JSON Lines audit log. Editing or deleting a record breaks the chain and `audit.verify()` reports the first bad line.
-
-Other behaviour: unknown or extra arguments are rejected (JSON-RPC `-32602`), tool schemas set `additionalProperties: false`, a policy refusal is a normal tool result (`isError: false`) with named checks, malformed JSON gets `-32700`, and any unexpected exception becomes `-32603` with no stack trace and never an ALLOW. The server refuses to start without a known bearer token (exit 3).
-
-## Run it (about 2 minutes, Python 3.10+)
 ```bash
-python3 demo.py                              # 19 scripted expectations; exit 0 only if all hold
-python3 -m unittest discover -s tests -v     # 13 tests
-uv run --with mcp python interop/sdk_client_check.py   # optional: drives it with the official MCP Python SDK client
+python3 demo.py
+python3 -W error::ResourceWarning -m unittest discover -s tests -v
 ```
 
-## Test runs (Oct 2, 2026, Linux, Python 3.13.5)
-- `demo.py`: 19/19 expectations held, exit 0.
-- Unit tests: 13 passed.
-- Interop: the official MCP Python SDK client (`mcp` 2.3.0) initialized the server (protocol `2025-06-18`), listed the 7 tools, and got `NOT_FOUND` for a cross-tenant read.
-- The Dockerfile was **not** built or run.
+The demo checks 19 expectations and exits 0 only if all pass. Strict wire parsing rejects non-JSON constants, overflowing floating-point numbers and duplicate object members before dispatch; invalid request IDs produce a valid error with null ID. Tool `_meta`, when supplied, must be an object. The tests cover validation, scopes, tenant isolation, expiry/replay, stale quote/contract checks, concurrent approval, audit failure rollback and anchored tail verification. See [VERIFICATION.md](VERIFICATION.md) for actual results. CI repeats these commands; a workflow file does not establish a hosted CI pass.
 
-## Limits (read these before relying on any of it)
-- **Synthetic data and fake tokens.** The token table stands in for an identity provider. A real deployment would use the MCP Streamable HTTP transport with OAuth 2.1 access tokens validated against the customer's IdP (issuer, audience, expiry, JWKS rotation), which this sample does not implement.
-- **One principal per stdio session.** No concurrency control on the JSON state file; a real system uses a database with transactions.
-- **The audit log is tamper-evident, not tamper-proof.** Anyone who can rewrite the whole file can recompute the chain. Anchor the head hash outside the system in production.
-- **`request_deposit` only records intent.** No payment provider is called.
-- Thresholds (10%, 20%, 50%) are illustrative, not recommendations.
-- No load, security or penetration testing was done. No certification or compliance claim of any kind.
+Optional experiment: `uv run --with mcp python interop/sdk_client_check.py`, using the [official MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk). The SDK experiment passed with `mcp 2.3.0` and Python 3.12.14 (runs on October 2 and 3, 2026, CT): it initialized the server, listed all seven tools and rejected a cross-tenant read. Docker remains unbuilt/unverified. Record the SDK version for future runs. The server implements a stdio subset with protocol `2025-06-18`, not all MCP methods or production HTTP transport.
 
-## Where it lives
-github.com/linus10x/sample-mcp-context-gateway, made public after an accuracy review.
+## Seven tools
+
+| Tool | Scope | Behavior |
+|---|---|---|
+| `search_accounts`, `get_account`, `list_pending` | `crm.read` | Own tenant only; foreign objects look missing. Pending actions expose parameters, expected state and expiry for review. |
+| `set_lead_tier` | `crm.write` | Always pending; approval requires the prior tier still to match. |
+| `quote_price` | `quotes.write` | Through 10% discount: direct quote; above 10% through 20%: pending; negative or above 20%: denied. |
+| `request_deposit` | `payments.request` | Signed contract/current quote required. Cumulative deposit intent for the account, including the proposed amount, must fit within 50% of the current quote. Always pending. |
+| `approve_action` | `actions.approve` | Same tenant, different principal; five-minute expiry. Rechecks quote/contract prerequisites and consumes the action. A stale/expired approval is denied and removed. |
+
+Thresholds and expiry are invented example policies. Money uses integer cents. Numeric inputs must be finite, at most two decimal places and within an absolute sample limit of one million. Zero/negative deposit amounts are denied. `APPROVED_AND_APPLIED` means applied to local synthetic state, never a real payment.
+
+The token table assigns approval scope to a synthetic human identity. It demonstrates separation of principals, not verified human identity. A real IdP must enforce human approver groups and prevent agent identities acquiring that privilege.
+
+## Atomic state and audit
+
+`GATEWAY_STATE` selects SQLite (default `state.sqlite3`). Each tool call uses `BEGIN IMMEDIATE`. State and the hash-chained audit event commit together; insert/commit failure rolls back local state and yields no success result. Local concurrent writers serialize. The existing chain is checked before each call. Full-state JSON storage and full-chain scanning are intentionally small-sample choices, not a high-volume design.
+
+Successful, denied, missing-record and argument-error calls are audited when the transaction can commit. Malformed JSON, other protocol methods and requests while storage is unusable are not committed tool events. Raw argument values are omitted to avoid recording customer notes. Relevant action IDs are logged. Production needs an approved object/version/redaction policy.
+
+Offline snapshot export:
+
+```bash
+GATEWAY_STATE=state.sqlite3 python3 -c "from gateway import store; print(store.export('audit.jsonl'))"
+```
+
+The returned `{count, hash}` is an anchor. `audit.verify(path)` detects edits and internal chain gaps. **A valid prefix cannot reveal tail deletion.** `audit.verify(path, anchor)` also detects truncation if that anchor was separately retained and trusted. A database administrator can rewrite everything and recompute hashes. External anchoring/WORM storage is not implemented. Export failure does not undo previously committed actions.
+
+This replaces the old two-file JSON state/audit design. Old JSON state is not migrated; do not pass it as the SQLite path. `GATEWAY_AUDIT` is no longer a runtime setting.
+
+## Production boundary
+
+Real work adds validated IdP tokens, transport/session lifecycle, provider adapters, idempotency/outbox processing, authenticated webhooks, reconciliation, database access controls/backups, external audit anchors and security/load tests. SQLite cannot atomically commit a remote CRM write or payment. The [runbook](DEPLOYMENT_RUNBOOK.md) identifies customer-environment acceptance work.
+
+This synthetic demonstration supports an implementation discussion; it does not establish production delivery history or certify security.

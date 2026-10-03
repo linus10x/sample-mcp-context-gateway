@@ -1,27 +1,32 @@
-# SAMPLE runbook: putting an MCP gateway into a customer's firewalled environment
+# SAMPLE: customer-environment acceptance runbook
 
-> Sample / illustrative. Written for the synthetic gateway in this folder. It describes the checks I would run; it is not a record of any real deployment.
+> Fictional deployment plan, not a completed installation. Kunjar Bhaduri, Bhaduri Advisory, with AI drafting assistance under my direction. Runnable code uses synthetic data and fake identity tokens.
 
-## Before the first call with the customer's engineers
-1. **Network path.** Where will the gateway run (customer VPC, on-prem Docker host, or SaaS)? List every outbound destination it needs (model API, IdP, the systems it reads). Get the egress allowlist approved in writing before day one; this is the usual pilot blocker.
-2. **Identity.** Which IdP (Entra ID, Okta, Google)? Agree the OAuth 2.1 flow, token audience, scopes per tool, and token lifetime. Decide who may hold an approval scope; it should be a named group, never the agent's service identity.
-3. **Data boundary.** Which tenants, objects and fields the agent may read. Default deny for anything not listed. Decide what must never leave the network (for example, free-text notes).
-4. **Write and money actions.** List them. Each one gets a human approval step and a named approver group. Agree thresholds with the business owner, not the engineers.
+## Agree the boundary
 
-## Deploy
-5. Run as a non-root user with a read-only filesystem except the state and audit paths.
-6. Secrets come from the customer's vault at run time, never baked into the image.
-7. Ship the audit log to the customer's logging system and anchor the head hash daily.
-8. Health check: `ping` plus a `tools/list` with a read-only token.
+Agree the business outcome, system scope and acceptance owner. Map VPC/on-prem hosting, model/IdP/CRM destinations, proxy/TLS requirements, DNS, the egress allowlist and prohibited outbound data. Obtain customer network approval before committing to a deployment date.
 
-## Prove it before go-live (acceptance tests)
-9. Read-only token cannot write (expect DENY with the scope check named).
-10. Cross-tenant read returns NOT_FOUND, not an error that reveals existence.
-11. Agent cannot approve its own action; approver must differ from requester.
-12. Over-limit discount or deposit is denied with the named check.
-13. Extra or malformed arguments are rejected.
-14. Edit one audit record in a copy of the log and confirm verification fails at that line.
+Choose real transport and OAuth/IdP authentication. Validate issuer, audience, expiry, key rotation and least-privilege scopes against the customer's IdP. Approval rights belong to an approved human group. The sample token table is not that implementation. Define field ownership, permitted reads/writes, commercial thresholds, expiry, contract/quote versions and cumulative payment limits. Customer/retrieved text is untrusted input, never authority to expand tools.
 
-## Hand-off
-15. One-page runbook for the customer's on-call team: start, stop, rotate tokens, read the audit log, what each decision code means.
-16. A short list of what was deliberately left out of the pilot and why.
+## Build and deploy
+
+Use reviewed dependencies/images, runtime secrets, a non-root process, scoped storage access and persistent backups. The Dockerfile is an unverified sketch. For this sample, persist the SQLite path and journal files; do not use the obsolete two-file audit scheme. For production, select a transactional store suited to volume and availability requirements.
+
+Remote changes require durable intents/outbox processing, provider idempotency and reconciliation. Log object/action/version IDs under an approved redaction policy. Export to an independent logging system and retain trusted external anchors. Define health/queue/policy/transaction-failure alerts, rollback, recovery and credential rotation.
+
+## Acceptance before real actions
+
+| Exercise | Evidence required |
+|---|---|
+| Identity/privilege | Invalid/expired tokens fail; unauthorized identity cannot read/write/approve |
+| Tenant boundary | Foreign records/actions look missing; no cross-tenant data or error leakage |
+| Human review | Exact action/version inspectable; requester cannot approve |
+| Stale state/expiry | Quote/contract/tier change and expiry block stale execution |
+| Money/retries | Concurrent limits hold; repeated callback/action cannot duplicate external charge |
+| Storage/audit failure | Injected failure commits no local action; remote recovery independently reconciles |
+| Audit boundary | Middle edit fails; tail deletion fails against independently stored trusted anchor |
+| Prompt injection | Untrusted text cannot bypass tool, approval, suppression or tenant policy |
+| Recovery | Isolated restore and rollback meet approved targets, including usable application |
+| Network | Approved firewall/proxy/IdP paths exercised in actual customer environment |
+
+Keep sandbox and controlled live checks distinct. Customer accepts the tested scope with open risks recorded. Handoff includes owners, thresholds, runbooks, model/prompt configuration, dependency versions, stop switches, recovery evidence and rollback decisions. No exercise in this document is claimed complete.

@@ -4,6 +4,6 @@ RUN useradd --create-home --uid 10001 gateway
 WORKDIR /app
 COPY gateway/ gateway/
 USER gateway
-ENV GATEWAY_STATE=/home/gateway/state.json GATEWAY_AUDIT=/home/gateway/audit.jsonl
+ENV GATEWAY_STATE=/home/gateway/state.sqlite3
 # MCP_BEARER must be supplied at run time; the server refuses to start without it (exit 3).
 ENTRYPOINT ["python", "-m", "gateway.server"]
