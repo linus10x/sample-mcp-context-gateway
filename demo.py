@@ -2,7 +2,7 @@
 import json, os, shutil, sys, tempfile
 
 from client import Session
-from gateway import audit
+from gateway import audit, store
 
 work = tempfile.mkdtemp(prefix="gw-demo-")
 agent = Session("tok-agent-acme", work)
@@ -45,11 +45,15 @@ expect("17 malformed JSON rejected (-32700)", agent.raw("{not json").get("error"
 for s in (agent, human, bot):
     s.close()
 apath = os.path.join(work, "audit.jsonl")
-ok, n, _ = audit.verify(apath)
+os.environ["GATEWAY_STATE"] = os.path.join(work, "state.sqlite3")
+anchor = store.export(apath)
+ok, n, _ = audit.verify(apath, anchor)
 expect("18 audit chain verifies", ok, True)
-lines = open(apath).read().splitlines()
+with open(apath) as f:
+    lines = f.read().splitlines()
 rec = json.loads(lines[2]); rec["decision"] = "ALLOW"; lines[2] = json.dumps(rec, sort_keys=True)
-open(apath, "w").write("\n".join(lines) + "\n")
+with open(apath, "w") as f:
+    f.write("\n".join(lines) + "\n")
 ok2, _, bad_line = audit.verify(apath)
 expect("19 edited audit record is detected", (ok2, bad_line), (False, 3))
 

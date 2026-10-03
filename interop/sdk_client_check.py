@@ -9,11 +9,11 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 async def main():
-    tmp = tempfile.mkdtemp()
+    tmpdir = tempfile.TemporaryDirectory()
+    tmp = tmpdir.name
     params = StdioServerParameters(command=sys.executable, args=["-m", "gateway.server"], cwd=HERE,
                                    env={"MCP_BEARER": "tok-agent-acme", "PYTHONPATH": HERE,
-                                        "GATEWAY_STATE": os.path.join(tmp, "s.json"),
-                                        "GATEWAY_AUDIT": os.path.join(tmp, "a.jsonl")})
+                                        "GATEWAY_STATE": os.path.join(tmp, "state.sqlite3")})
     async with stdio_client(params) as (r, w):
         async with ClientSession(r, w) as s:
             init = await s.initialize()
@@ -23,6 +23,7 @@ async def main():
             print("tools:", [t.name for t in tools.tools])
             print("cross-tenant get_account ->", res.structured_content)
             assert res.structured_content["decision"] == "NOT_FOUND"
+    tmpdir.cleanup()
     print("SDK interop check passed")
 
 asyncio.run(main())
