@@ -23,7 +23,7 @@ SHA-256 binds this record to the source. Changes require rechecking affected ass
 | `DEPLOYMENT_RUNBOOK.md` | `dd75051c3fe07cfea228b5bc0417dd9e2059bf769427f7081ba1e62e1eab8805` |
 | `Dockerfile` | `ebfdcce17d178758cf2481e8cd4312c1cf4270a07292e3f313651fe9f6911d4c` |
 | `LICENSE` | `037df8cb655d4ff33487e5052e79b617699db575004c68f7e122187b8de7d67f` |
-| `README.md` | `50221804967aa603e92063ceb79dafded823e5162ab30b1aa2bc146ccce08b18` |
+| `README.md` | `30b61672711bc8730e10977291a4ab19e04a2f3619314e6464aee4b110986333` |
 | `client.py` | `b7757ff945d277558540a79e203a664406d9f6644e45c30cef385a76e5f7241c` |
 | `demo.py` | `f2a39be90c7c9c7eba5c07f4d01a585304fbe1aadebd2c4b40af60d886361064` |
 | `gateway/__init__.py` | `951279e6b69619efdc730e5f68623a5bd015c0011aa42465a17fd65a1be656f2` |

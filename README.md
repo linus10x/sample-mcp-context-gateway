@@ -1,8 +1,8 @@
 # SAMPLE: MCP context gateway with approval controls
 
-> **Illustrative sample on synthetic data by Kunjar Bhaduri, Bhaduri Advisory. Synthetic accounts and deliberately fake tokens only. Built by AI coding tools under my direction. No client relationship, real system connection or money movement. Revised October 2, 2026 (America/Chicago).**
+> **Illustrative sample on synthetic data by Kunjar Bhaduri, Bhaduri Advisory. Synthetic accounts and deliberately fake tokens only. Built by AI coding tools under my direction. No client relationship, real system connection or money movement. Revised October 3, 2026 (America/Chicago).**
 
-An agent needs a controlled path from account context to an action. This server demonstrates tenant boundaries, tool scopes, reviewable approvals, execution-time checks and an audit record that commits with local state. It supports the [SnapLogic Applied AI Architect mandate](https://jobs.lever.co/snaplogic/3d408fe5-5fbb-4402-9c36-54a2bf2b9b59) and CRM/AI work. The scoring harness is the separate Engineering Analytics CTO sample.
+An agent needs a controlled path from account context to an action. This server demonstrates tenant boundaries, tool scopes, reviewable approvals, execution-time checks and an audit record that commits with local state. It is relevant to applied-AI architect and CRM/AI integration work. The scoring harness is a separate sample.
 
 ## Run and inspect
 
@@ -51,4 +51,4 @@ This replaces the old two-file JSON state/audit design. Old JSON state is not mi
 
 Real work adds validated IdP tokens, transport/session lifecycle, provider adapters, idempotency/outbox processing, authenticated webhooks, reconciliation, database access controls/backups, external audit anchors and security/load tests. SQLite cannot atomically commit a remote CRM write or payment. The [runbook](DEPLOYMENT_RUNBOOK.md) identifies customer-environment acceptance work.
 
-Publication requires owner approval. This synthetic demonstration supports an implementation discussion; it does not establish production delivery history or certify security.
+This synthetic demonstration supports an implementation discussion; it does not establish production delivery history or certify security.
