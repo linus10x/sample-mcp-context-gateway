@@ -4,9 +4,9 @@
 
 ## Agree the boundary
 
-Agree the business outcome, system scope and acceptance owner. Map VPC/on-prem hosting, model/IdP/CRM destinations, proxy/TLS requirements, DNS, egress restrictions and prohibited outbound data. Obtain customer network approval before committing to a deployment date.
+Agree the business outcome, system scope and acceptance owner. Map VPC/on-prem hosting, model/IdP/CRM destinations, proxy/TLS requirements, DNS, the egress allowlist and prohibited outbound data. Obtain customer network approval before committing to a deployment date.
 
-Choose real transport/authentication. Validate issuer, audience, expiry, key rotation and least-privilege scopes against the customer's IdP. Approval rights belong to an approved human group. The sample token table is not that implementation. Define field ownership, permitted reads/writes, commercial thresholds, expiry, contract/quote versions and cumulative payment limits. Customer/retrieved text is untrusted input, never authority to expand tools.
+Choose real transport and OAuth/IdP authentication. Validate issuer, audience, expiry, key rotation and least-privilege scopes against the customer's IdP. Approval rights belong to an approved human group. The sample token table is not that implementation. Define field ownership, permitted reads/writes, commercial thresholds, expiry, contract/quote versions and cumulative payment limits. Customer/retrieved text is untrusted input, never authority to expand tools.
 
 ## Build and deploy
 

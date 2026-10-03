@@ -1,6 +1,6 @@
 # SAMPLE: MCP context gateway with approval controls
 
-> **Illustrative work by Kunjar Bhaduri, Bhaduri Advisory. Synthetic accounts and deliberately fake tokens only. Built with AI coding tools under my direction. No client relationship, real system connection or money movement. Revised October 2, 2026 (America/Chicago).**
+> **Illustrative sample on synthetic data by Kunjar Bhaduri, Bhaduri Advisory. Synthetic accounts and deliberately fake tokens only. Built by AI coding tools under my direction. No client relationship, real system connection or money movement. Revised October 2, 2026 (America/Chicago).**
 
 An agent needs a controlled path from account context to an action. This server demonstrates tenant boundaries, tool scopes, reviewable approvals, execution-time checks and an audit record that commits with local state. It supports the [SnapLogic Applied AI Architect mandate](https://jobs.lever.co/snaplogic/3d408fe5-5fbb-4402-9c36-54a2bf2b9b59) and CRM/AI work. The scoring harness is the separate Engineering Analytics CTO sample.
 
@@ -15,7 +15,7 @@ python3 -W error::ResourceWarning -m unittest discover -s tests -v
 
 The demo checks 19 expectations and exits 0 only if all pass. Strict wire parsing rejects non-JSON constants, overflowing floating-point numbers and duplicate object members before dispatch; invalid request IDs produce a valid error with null ID. Tool `_meta`, when supplied, must be an object. The tests cover validation, scopes, tenant isolation, expiry/replay, stale quote/contract checks, concurrent approval, audit failure rollback and anchored tail verification. See [VERIFICATION.md](VERIFICATION.md) for actual results. CI repeats these commands; a workflow file does not establish a hosted CI pass.
 
-Optional experiment: `uv run --with mcp python interop/sdk_client_check.py`, using the [official MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk). The independent reviewer ran the SDK experiment successfully with `mcp 2.3.0` and Python 3.12.14, initializing the server, listing all seven tools and rejecting a cross-tenant read. Docker remains unbuilt/unverified. Record the SDK version for future runs. The server implements a stdio subset with protocol `2025-06-18`, not all MCP methods or production HTTP transport.
+Optional experiment: `uv run --with mcp python interop/sdk_client_check.py`, using the [official MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk). The SDK experiment passed with `mcp 2.3.0` and Python 3.12.14 (runs on October 2 and 3, 2026, CT): it initialized the server, listed all seven tools and rejected a cross-tenant read. Docker remains unbuilt/unverified. Record the SDK version for future runs. The server implements a stdio subset with protocol `2025-06-18`, not all MCP methods or production HTTP transport.
 
 ## Seven tools
 

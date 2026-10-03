@@ -1,6 +1,6 @@
 # Verification record
 
-Verified 2026-10-02 America/Chicago (2026-10-03 UTC), Linux, Python 3.12.14. Synthetic reference scope only. Independent adversarial findings and grades are recorded separately; this record is implementation verification.
+Verified October 2-3, 2026 America/Chicago, Linux. Synthetic reference scope only. This record is implementation verification.
 
 | Command | Outcome |
 |---|---|
@@ -10,7 +10,7 @@ Verified 2026-10-02 America/Chicago (2026-10-03 UTC), Linux, Python 3.12.14. Syn
 
 Actual deferred-COMMIT rollback, strict non-JSON rejection, invalid response-ID sanitization and discovery/runtime bounds are covered. Module/server use one version. Docker, hosted CI and real-provider deployment remain unverified.
 
-Python 3.10/3.11 runtime execution was not performed; source targets Python 3.10+.
+Re-run October 3, 2026 (CT) on Python 3.10.22, 3.11.17, 3.12.14 and 3.13.5: demo 19/19 and 30 tests OK on each. On 3.13.5 the test run prints one ignored sqlite ResourceWarning but still exits 0. The SDK check used Python 3.12.14. Source targets Python 3.10+.
 
 ## Source identity before this record
 
@@ -20,10 +20,10 @@ SHA-256 binds this record to the source. Changes require rechecking affected ass
 |---|---|
 | `.github/workflows/verify.yml` | `c151f5872f0070a4239c18c418699277f23b02418e09dd6f425536d5aa7ef0a2` |
 | `.gitignore` | `955c17438f8fb8a2c600c7d6e3904e5c602b90df550537fbc5a15d93e497ef28` |
-| `DEPLOYMENT_RUNBOOK.md` | `3e113b56fc563bfcc74a28c1a92590bac22ef3e5a5b1b30e1d0175526ff5fa69` |
+| `DEPLOYMENT_RUNBOOK.md` | `dd75051c3fe07cfea228b5bc0417dd9e2059bf769427f7081ba1e62e1eab8805` |
 | `Dockerfile` | `ebfdcce17d178758cf2481e8cd4312c1cf4270a07292e3f313651fe9f6911d4c` |
 | `LICENSE` | `037df8cb655d4ff33487e5052e79b617699db575004c68f7e122187b8de7d67f` |
-| `README.md` | `9a2d8598e6a64f118840c729c5f75ff4d7f1bfed4847a93bd0fbd68a83cf48e1` |
+| `README.md` | `50221804967aa603e92063ceb79dafded823e5162ab30b1aa2bc146ccce08b18` |
 | `client.py` | `b7757ff945d277558540a79e203a664406d9f6644e45c30cef385a76e5f7241c` |
 | `demo.py` | `f2a39be90c7c9c7eba5c07f4d01a585304fbe1aadebd2c4b40af60d886361064` |
 | `gateway/__init__.py` | `951279e6b69619efdc730e5f68623a5bd015c0011aa42465a17fd65a1be656f2` |
