@@ -199,12 +199,12 @@ class InProcess(unittest.TestCase):
         self.assertEqual(server.load_state()["approved_quotes"]["acme/A-100"]["total_cents"], 150000)
 
     def test_actual_commit_failure_rolls_back_state_and_audit(self):
-        import sqlite3
+        import contextlib, sqlite3
         from unittest.mock import patch
         self.call("tok-agent-acme", "search_accounts", query="a")
         before, count = server.load_state(), len(store.records())
         real_connect = sqlite3.connect
-        with real_connect(os.environ["GATEWAY_STATE"]) as db:
+        with contextlib.closing(real_connect(os.environ["GATEWAY_STATE"])) as db, db:
             db.execute('CREATE TABLE parent(id INTEGER PRIMARY KEY)')
             db.execute('CREATE TABLE child(pid INTEGER REFERENCES parent(id) DEFERRABLE INITIALLY DEFERRED)')
             db.execute('CREATE TRIGGER fail_commit AFTER INSERT ON events BEGIN INSERT INTO child VALUES (1); END')

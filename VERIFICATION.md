@@ -12,6 +12,8 @@ Actual deferred-COMMIT rollback, strict non-JSON rejection, invalid response-ID 
 
 Re-run October 3, 2026 (CT) on Python 3.10.22, 3.11.17, 3.12.14 and 3.13.5: demo 19/19 and 30 tests OK on each. On 3.13.5 the test run prints one ignored sqlite ResourceWarning but still exits 0. The SDK check used Python 3.12.14. Source targets Python 3.10+.
 
+Re-run October 14, 2026 (CT) on macOS. The ignored warning came from a test setup connection that was committed but never closed; the test now closes it. On Python 3.12.13 and 3.14.4: demo 19/19, the CI unittest command OK with 30 tests and no ignored warning, and `python3 -m pytest -W error tests` 30 passed. Before the fix, that pytest command failed on 3.14.4 on the unclosed connection and passed on 3.12.13. The SDK check was not re-run.
+
 ## Source identity before this record
 
 SHA-256 binds this record to the source. Changes require rechecking affected assertions.
@@ -34,4 +36,4 @@ SHA-256 binds this record to the source. Changes require rechecking affected ass
 | `gateway/store.py` | `c7c155d6e1f3ef90b54b7b45cdb5bbf00b806b8fbf16bba939b471d9f33c38b9` |
 | `interop/sdk_client_check.py` | `e8c1942f3dcf6c9a0893d12a30347847024338d9acf802510ac8afb54c5a7ab6` |
 | `tests/__init__.py` | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
-| `tests/test_gateway.py` | `00ef8c860b5861fc24b5b60354f759efa72115731b7c83f81f3b08745492f9be` |
+| `tests/test_gateway.py` | `ef12a98284becacd0b39a0be07d54fce3d7234eaa0afb1340dffafbba117a2a2` |
