@@ -1,5 +1,5 @@
 # SAMPLE. Not built or tested on the box (no Docker run was done). Standard library only, so no pip install.
-FROM python:3.13-slim
+FROM python:3.15-slim
 RUN useradd --create-home --uid 10001 gateway
 WORKDIR /app
 COPY gateway/ gateway/
